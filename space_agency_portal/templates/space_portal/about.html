@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}About COSMOSX{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <div class="hero-badge">🌌 OUR STORY</div>
+    <h1 class="page-header-title">About COSMOSX</h1>
+    <p class="page-header-sub">Pioneering the next era of space exploration since 2001</p>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+
+    <!-- Mission Statement -->
+    <div class="row g-5 align-items-center mb-5 fade-in">
+      <div class="col-lg-6">
+        <span class="section-tag">OUR MISSION</span>
+        <h2 class="section-title" style="text-align:left;">Expanding Humanity's Reach Beyond Earth</h2>
+        <div class="section-divider" style="margin-left:0;"></div>
+        <p style="color:var(--text-secondary);line-height:1.9;margin-bottom:20px;">
+          COSMOSX Space Agency was founded with a singular vision: to make humanity a multi-planetary species. Through innovative technology, rigorous science, and an unwavering commitment to discovery, we push the boundaries of what's possible.
+        </p>
+        <p style="color:var(--text-secondary);line-height:1.9;">
+          From Earth orbit to the outer reaches of our solar system, COSMOSX leads the most ambitious space exploration program in history. Our missions generate knowledge that benefits all of humanity.
+        </p>
+      </div>
+      <div class="col-lg-6">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          {% for item in "1234" %}
+          <div class="space-card text-center" style="padding:28px 20px;">
+            <div style="font-size:2.5rem;margin-bottom:12px;">
+              {% if forloop.counter == 1 %}🚀{% elif forloop.counter == 2 %}🌍{% elif forloop.counter == 3 %}🔬{% else %}👨‍🚀{% endif %}
+            </div>
+            <div style="font-family:var(--font-display);font-size:1.6rem;color:var(--accent-cyan);font-weight:900;">
+              {% if forloop.counter == 1 %}50+{% elif forloop.counter == 2 %}24{% elif forloop.counter == 3 %}200+{% else %}80+{% endif %}
+            </div>
+            <div style="font-size:0.72rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;">
+              {% if forloop.counter == 1 %}Missions{% elif forloop.counter == 2 %}Years{% elif forloop.counter == 3 %}Research Papers{% else %}Astronauts{% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Values -->
+    <div class="section-heading fade-in">
+      <span class="section-tag">WHAT DRIVES US</span>
+      <h2 class="section-title">Our Core Principles</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="row g-4 mb-5">
+      {% for item in "1234" %}
+      <div class="col-lg-3 col-md-6 fade-in" style="transition-delay:{{ forloop.counter0 }}00ms;">
+        <div class="space-card text-center" style="padding:32px 20px;height:100%;">
+          <div style="font-size:2.8rem;margin-bottom:16px;">
+            {% if forloop.counter == 1 %}🔭{% elif forloop.counter == 2 %}🤝{% elif forloop.counter == 3 %}💡{% else %}🛡️{% endif %}
+          </div>
+          <h5 style="font-family:var(--font-display);font-size:0.88rem;color:var(--accent-cyan);letter-spacing:0.08em;margin-bottom:12px;">
+            {% if forloop.counter == 1 %}EXPLORATION{% elif forloop.counter == 2 %}COLLABORATION{% elif forloop.counter == 3 %}INNOVATION{% else %}SAFETY{% endif %}
+          </h5>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.7;">
+            {% if forloop.counter == 1 %}We venture into the unknown, driven by humanity's innate curiosity to understand the cosmos.
+            {% elif forloop.counter == 2 %}We partner with international agencies, universities, and industry to achieve what no single entity can alone.
+            {% elif forloop.counter == 3 %}We develop cutting-edge technologies that advance not just space exploration but life on Earth.
+            {% else %}The safety of our astronauts and personnel is our highest priority in every decision we make.{% endif %}
+          </p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Timeline -->
+    <div class="section-heading fade-in">
+      <span class="section-tag">OUR JOURNEY</span>
+      <h2 class="section-title">Agency Timeline</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="launch-timeline fade-in" style="max-width:700px;margin:0 auto;">
+      {% for event in "12345" %}
+      <div class="launch-item">
+        <div style="font-family:var(--font-display);font-size:0.65rem;letter-spacing:0.2em;color:var(--accent-gold);margin-bottom:6px;">
+          {% if forloop.counter == 1 %}2001{% elif forloop.counter == 2 %}2006{% elif forloop.counter == 3 %}2012{% elif forloop.counter == 4 %}2018{% else %}2024{% endif %}
+        </div>
+        <h5 style="font-family:var(--font-display);font-size:0.9rem;color:#fff;margin-bottom:6px;">
+          {% if forloop.counter == 1 %}Agency Founded
+          {% elif forloop.counter == 2 %}First Crewed Orbital Mission
+          {% elif forloop.counter == 3 %}Lunar Research Program Launched
+          {% elif forloop.counter == 4 %}Mars Reconnaissance Initiative
+          {% else %}Deep Space Exploration Era{% endif %}
+        </h5>
+        <p style="font-size:0.84rem;color:var(--text-secondary);">
+          {% if forloop.counter == 1 %}COSMOSX established by international treaty with founding members from 12 nations.
+          {% elif forloop.counter == 2 %}COSMOSX-1 successfully carried 3 astronauts to orbit, marking our first crewed mission.
+          {% elif forloop.counter == 3 %}Beginning of sustained lunar exploration with orbital and surface missions.
+          {% elif forloop.counter == 4 %}First COSMOSX spacecraft reaches Mars orbit, returning unprecedented imagery.
+          {% else %}Ambitious program to explore Jupiter, Saturn, and beyond begins this decade.{% endif %}
+        </p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center mt-5 fade-in">
+      <a href="{% url 'contact' %}" class="btn-space btn-primary-space me-3">JOIN OUR MISSION</a>
+      <a href="{% url 'missions' %}" class="btn-space btn-outline-space">EXPLORE MISSIONS</a>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

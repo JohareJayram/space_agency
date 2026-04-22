@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact — COSMOSX{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <div class="hero-badge">📡 COMMUNICATIONS</div>
+    <h1 class="page-header-title">Contact Us</h1>
+    <p class="page-header-sub">Reach out to COSMOSX Mission Control</p>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5 justify-content-center">
+
+      <!-- Contact Info -->
+      <div class="col-lg-4">
+        <div class="fade-in">
+          <h3 style="font-family:var(--font-display);font-size:1rem;color:var(--accent-cyan);letter-spacing:0.1em;margin-bottom:24px;">MISSION CONTROL</h3>
+
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div class="space-card" style="padding:20px;display:flex;align-items:flex-start;gap:16px;">
+              <div style="font-size:1.8rem;color:var(--accent-cyan);">📍</div>
+              <div>
+                <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:6px;">HEADQUARTERS</div>
+                <div style="color:var(--text-primary);font-size:0.9rem;">1 Space Center Blvd<br>Cape Cosmo, FL 32899<br>United States</div>
+              </div>
+            </div>
+            <div class="space-card" style="padding:20px;display:flex;align-items:flex-start;gap:16px;">
+              <div style="font-size:1.8rem;color:var(--accent-cyan);">📞</div>
+              <div>
+                <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:6px;">HOTLINE</div>
+                <div style="color:var(--text-primary);font-size:0.9rem;">+1 (800) COSMOSX<br>24/7 Mission Support</div>
+              </div>
+            </div>
+            <div class="space-card" style="padding:20px;display:flex;align-items:flex-start;gap:16px;">
+              <div style="font-size:1.8rem;color:var(--accent-cyan);">✉️</div>
+              <div>
+                <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:6px;">EMAIL</div>
+                <div style="color:var(--text-primary);font-size:0.9rem;">info@cosmosx.space<br>press@cosmosx.space</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 space-card" style="padding:20px;">
+            <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.12em;color:var(--accent-cyan);margin-bottom:14px;">SYSTEM STATUS</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:0.8rem;">
+              <div style="display:flex;justify-content:space-between;color:var(--text-secondary);">
+                <span>Mission Control</span>
+                <span style="color:var(--accent-green);">● Online</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;color:var(--text-secondary);">
+                <span>Deep Space Network</span>
+                <span style="color:var(--accent-green);">● Active</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;color:var(--text-secondary);">
+                <span>Communications</span>
+                <span style="color:var(--accent-green);">● Operational</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="col-lg-7">
+        <div class="space-card fade-in fade-in-delay-1" style="padding:40px;">
+          <h3 style="font-family:var(--font-display);font-size:1rem;color:var(--accent-cyan);letter-spacing:0.1em;margin-bottom:30px;">
+            <i class="bi bi-send me-2"></i>SEND A MESSAGE
+          </h3>
+
+          <form method="POST" class="space-form">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="{{ form.name.id_for_label }}">Your Name</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div style="font-size:0.78rem;color:var(--accent-red);margin-top:4px;">{{ form.name.errors.0 }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label for="{{ form.email.id_for_label }}">Email Address</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div style="font-size:0.78rem;color:var(--accent-red);margin-top:4px;">{{ form.email.errors.0 }}</div>
+                {% endif %}
+              </div>
+              <div class="col-12">
+                <label for="{{ form.subject.id_for_label }}">Subject</label>
+                {{ form.subject }}
+                {% if form.subject.errors %}
+                <div style="font-size:0.78rem;color:var(--accent-red);margin-top:4px;">{{ form.subject.errors.0 }}</div>
+                {% endif %}
+              </div>
+              <div class="col-12">
+                <label for="{{ form.message.id_for_label }}">Message</label>
+                {{ form.message }}
+                {% if form.message.errors %}
+                <div style="font-size:0.78rem;color:var(--accent-red);margin-top:4px;">{{ form.message.errors.0 }}</div>
+                {% endif %}
+              </div>
+              <div class="col-12 mt-2">
+                <button type="submit" class="btn-space btn-primary-space">
+                  <i class="bi bi-send me-2"></i>TRANSMIT MESSAGE
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

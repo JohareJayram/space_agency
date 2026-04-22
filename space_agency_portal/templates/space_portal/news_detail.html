@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }} — COSMOSX{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb" style="margin-bottom:16px;">
+      <ol class="breadcrumb" style="background:none;padding:0;font-size:0.8rem;">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--text-muted);">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'news' %}" style="color:var(--text-muted);">News</a></li>
+        <li class="breadcrumb-item active" style="color:var(--accent-cyan);">Article</li>
+      </ol>
+    </nav>
+    <span class="card-badge" style="background:rgba(0,229,255,0.1);color:var(--accent-cyan);border:1px solid rgba(0,229,255,0.2);font-size:0.7rem;padding:5px 14px;margin-bottom:12px;display:inline-block;">
+      {{ article.get_category_display }}
+    </span>
+    <h1 class="page-header-title" style="font-size:clamp(1.6rem,4vw,2.8rem);">{{ article.title }}</h1>
+    <div style="display:flex;flex-wrap:wrap;gap:20px;margin-top:12px;font-size:0.82rem;color:var(--text-muted);">
+      <span><i class="bi bi-calendar3 me-1"></i>{{ article.published_at|date:"F d, Y" }}</span>
+      {% if article.author %}<span><i class="bi bi-person me-1"></i>{{ article.author.get_full_name|default:article.author.username }}</span>{% endif %}
+      {% if article.updated_at %}<span><i class="bi bi-pencil me-1"></i>Updated {{ article.updated_at|date:"M d, Y" }}</span>{% endif %}
+    </div>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        <!-- Article image placeholder -->
+        <div class="fade-in" style="width:100%;height:240px;background:linear-gradient(135deg,var(--space-blue),var(--space-dark));border-radius:12px;border:1px solid var(--border-glow);display:flex;align-items:center;justify-content:center;font-size:7rem;margin-bottom:36px;">
+          {% if article.category == 'mission' %}🚀
+          {% elif article.category == 'research' %}🔬
+          {% elif article.category == 'technology' %}⚙️
+          {% elif article.category == 'astronaut' %}👨‍🚀
+          {% else %}🌌{% endif %}
+        </div>
+
+        <!-- Summary -->
+        <div class="fade-in" style="background:rgba(0,229,255,0.05);border-left:3px solid var(--accent-cyan);border-radius:0 8px 8px 0;padding:20px 24px;margin-bottom:32px;">
+          <p style="color:var(--text-primary);font-size:1.05rem;line-height:1.8;font-weight:400;margin:0;">{{ article.summary }}</p>
+        </div>
+
+        <!-- Content -->
+        <div class="fade-in" style="color:var(--text-secondary);line-height:1.9;font-size:0.98rem;">
+          {{ article.content|linebreaks }}
+        </div>
+
+        {% if article.related_mission %}
+        <div class="fade-in mt-4" style="background:var(--card-bg);border:1px solid var(--border-glow);border-radius:10px;padding:20px;">
+          <div style="font-family:var(--font-display);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent-cyan);margin-bottom:10px;">RELATED MISSION</div>
+          <a href="{% url 'mission_detail' article.related_mission.slug %}" class="d-flex align-items-center gap-3" style="text-decoration:none;">
+            <span style="font-size:2rem;">🚀</span>
+            <div>
+              <div style="font-family:var(--font-display);color:#fff;font-size:0.9rem;">{{ article.related_mission.name }}</div>
+              <div style="font-size:0.78rem;color:var(--text-muted);">{{ article.related_mission.get_status_display }}</div>
+            </div>
+          </a>
+        </div>
+        {% endif %}
+
+        <div class="mt-5 fade-in">
+          <a href="{% url 'news' %}" class="btn-space btn-outline-space">
+            <i class="bi bi-arrow-left me-2"></i>BACK TO NEWS
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        {% if related_articles %}
+        <div class="space-card fade-in" style="padding:24px;">
+          <h4 style="font-family:var(--font-display);font-size:0.8rem;letter-spacing:0.15em;color:var(--accent-cyan);margin-bottom:20px;">RELATED ARTICLES</h4>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            {% for rel in related_articles %}
+            <a href="{% url 'news_detail' rel.slug %}" style="text-decoration:none;">
+              <div style="padding-bottom:16px;border-bottom:1px solid var(--border-glow);">
+                <div style="font-size:0.82rem;color:var(--text-primary);margin-bottom:4px;line-height:1.4;">{{ rel.title }}</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);">{{ rel.published_at|date:"M d, Y" }}</div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

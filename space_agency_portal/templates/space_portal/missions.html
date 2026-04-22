@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Missions — COSMOSX{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <div class="hero-badge">🚀 MISSION DATABASE</div>
+    <h1 class="page-header-title">Space Missions</h1>
+    <p class="page-header-sub">Comprehensive catalog of all COSMOSX space operations</p>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+
+    <!-- Search & Filters -->
+    <form method="GET" class="fade-in">
+      <div class="search-bar">
+        <input type="text" name="q" class="form-control" placeholder="🔍 Search missions..." value="{{ search_query }}" style="flex:1;min-width:200px;">
+        <select name="status" class="form-select" style="width:auto;">
+          <option value="">All Status</option>
+          {% for val, label in status_choices %}
+          <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <select name="type" class="form-select" style="width:auto;">
+          <option value="">All Types</option>
+          {% for val, label in type_choices %}
+          <option value="{{ val }}" {% if type_filter == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn-space btn-primary-space">SEARCH</button>
+        {% if search_query or status_filter or type_filter %}
+        <a href="{% url 'missions' %}" class="btn-space btn-outline-space">CLEAR</a>
+        {% endif %}
+      </div>
+    </form>
+
+    <!-- Results count -->
+    <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:30px;">
+      SHOWING {{ missions|length }} MISSION{% if missions|length != 1 %}S{% endif %}
+    </div>
+
+    <!-- Missions Grid -->
+    {% if missions %}
+    <div class="missions-grid">
+      {% for mission in missions %}
+      <div class="fade-in" style="transition-delay:{{ forloop.counter0 }}0ms;">
+        <a href="{% url 'mission_detail' mission.slug %}" style="text-decoration:none;">
+          <div class="space-card h-100">
+            <div class="card-image">
+              {% if mission.mission_type == 'lunar' %}🌕
+              {% elif mission.mission_type == 'mars' %}🔴
+              {% elif mission.mission_type == 'deep_space' %}🌌
+              {% elif mission.mission_type == 'iss' %}🛸
+              {% elif mission.mission_type == 'satellite' %}🛰️
+              {% else %}🌍{% endif %}
+            </div>
+            <div class="card-body-space">
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="card-badge
+                  {% if mission.status == 'active' %}badge-active
+                  {% elif mission.status == 'planned' %}badge-planned
+                  {% elif mission.status == 'completed' %}badge-completed
+                  {% else %}badge-cancelled{% endif %}">
+                  {{ mission.get_status_display|upper }}
+                </span>
+                <span class="card-badge" style="background:rgba(26,127,255,0.1);color:var(--accent-electric);border:1px solid rgba(26,127,255,0.2);">
+                  {{ mission.get_mission_type_display }}
+                </span>
+              </div>
+              <h5 class="card-title-space">{{ mission.name }}</h5>
+              <p class="card-text-space">{{ mission.description|truncatewords:22 }}</p>
+              <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border-glow);display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);">
+                <span><i class="bi bi-calendar3 me-1"></i>{{ mission.launch_date|date:"M d, Y" }}</span>
+                <span><i class="bi bi-people me-1"></i>{{ mission.crew_count }} crew</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center fade-in" style="padding:80px 0;color:var(--text-muted);">
+      <div style="font-size:4rem;margin-bottom:20px;">🔭</div>
+      <h4 style="font-family:var(--font-display);color:var(--text-secondary);">No missions found</h4>
+      <p>Try adjusting your search or filters.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

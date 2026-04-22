@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}News — COSMOSX{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <div class="hero-badge">📡 MISSION BRIEFINGS</div>
+    <h1 class="page-header-title">Space News</h1>
+    <p class="page-header-sub">Latest updates from COSMOSX operations and research</p>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+
+    <!-- Filters -->
+    <form method="GET" class="fade-in">
+      <div class="search-bar">
+        <input type="text" name="q" class="form-control" placeholder="🔍 Search news..." value="{{ search_query }}" style="flex:1;min-width:200px;">
+        <select name="category" class="form-select" style="width:auto;">
+          <option value="">All Categories</option>
+          {% for val, label in categories %}
+          <option value="{{ val }}" {% if category_filter == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn-space btn-primary-space">SEARCH</button>
+        {% if search_query or category_filter %}
+        <a href="{% url 'news' %}" class="btn-space btn-outline-space">CLEAR</a>
+        {% endif %}
+      </div>
+    </form>
+
+    <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:30px;">
+      {{ articles|length }} ARTICLE{% if articles|length != 1 %}S{% endif %} FOUND
+    </div>
+
+    {% if articles %}
+    <div class="row g-4">
+      {% for article in articles %}
+      <div class="col-lg-4 col-md-6 fade-in" style="transition-delay:{{ forloop.counter0 }}0ms;">
+        <a href="{% url 'news_detail' article.slug %}" style="text-decoration:none;">
+          <div class="space-card h-100">
+            <div class="card-image" style="height:150px;font-size:3rem;">
+              {% if article.category == 'mission' %}🚀
+              {% elif article.category == 'research' %}🔬
+              {% elif article.category == 'technology' %}⚙️
+              {% elif article.category == 'astronaut' %}👨‍🚀
+              {% else %}🌌{% endif %}
+            </div>
+            <div class="card-body-space">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="card-badge" style="background:rgba(0,229,255,0.1);color:var(--accent-cyan);border:1px solid rgba(0,229,255,0.2);">
+                  {{ article.get_category_display }}
+                </span>
+                {% if article.is_featured %}
+                <span class="card-badge" style="background:rgba(255,215,0,0.1);color:var(--accent-gold);border:1px solid rgba(255,215,0,0.2);">
+                  ★ FEATURED
+                </span>
+                {% endif %}
+              </div>
+              <h5 class="card-title-space">{{ article.title }}</h5>
+              <p class="card-text-space">{{ article.summary|truncatewords:20 }}</p>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-top:12px;border-top:1px solid var(--border-glow);padding-top:12px;display:flex;justify-content:space-between;">
+                <span><i class="bi bi-calendar3 me-1"></i>{{ article.published_at|date:"M d, Y" }}</span>
+                {% if article.author %}
+                <span><i class="bi bi-person me-1"></i>{{ article.author.username }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center fade-in" style="padding:80px 0;color:var(--text-muted);">
+      <div style="font-size:4rem;margin-bottom:20px;">📡</div>
+      <h4 style="font-family:var(--font-display);color:var(--text-secondary);">No articles found</h4>
+      <p>Try a different search or category filter.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

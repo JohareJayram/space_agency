@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ mission.name }} — COSMOSX{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb" style="margin-bottom:16px;">
+      <ol class="breadcrumb" style="background:none;padding:0;font-size:0.8rem;">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--text-muted);">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'missions' %}" style="color:var(--text-muted);">Missions</a></li>
+        <li class="breadcrumb-item active" style="color:var(--accent-cyan);">{{ mission.name }}</li>
+      </ol>
+    </nav>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <span class="card-badge {% if mission.status == 'active' %}badge-active{% elif mission.status == 'planned' %}badge-planned{% elif mission.status == 'completed' %}badge-completed{% else %}badge-cancelled{% endif %}" style="font-size:0.7rem;padding:5px 14px;">
+        {{ mission.get_status_display|upper }}
+      </span>
+      <span class="card-badge" style="background:rgba(26,127,255,0.1);color:var(--accent-electric);border:1px solid rgba(26,127,255,0.2);font-size:0.7rem;padding:5px 14px;">
+        {{ mission.get_mission_type_display }}
+      </span>
+    </div>
+    <h1 class="page-header-title">{{ mission.name }}</h1>
+    <p class="page-header-sub">{{ mission.agency }}</p>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5">
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        <!-- Mission Icon -->
+        <div class="fade-in" style="width:100%;height:280px;background:linear-gradient(135deg,var(--space-blue),var(--space-dark));border-radius:12px;border:1px solid var(--border-glow);display:flex;align-items:center;justify-content:center;font-size:8rem;margin-bottom:30px;">
+          {% if mission.mission_type == 'lunar' %}🌕
+          {% elif mission.mission_type == 'mars' %}🔴
+          {% elif mission.mission_type == 'deep_space' %}🌌
+          {% elif mission.mission_type == 'iss' %}🛸
+          {% elif mission.mission_type == 'satellite' %}🛰️
+          {% else %}🌍{% endif %}
+        </div>
+
+        <!-- Description -->
+        <div class="fade-in">
+          <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-cyan);letter-spacing:0.1em;margin-bottom:16px;">
+            <i class="bi bi-file-text me-2"></i>MISSION OVERVIEW
+          </h3>
+          <p style="color:var(--text-secondary);line-height:1.8;font-size:1rem;">{{ mission.description }}</p>
+        </div>
+
+        <!-- Objectives -->
+        <div class="fade-in mt-4" style="background:var(--card-bg);border:1px solid var(--border-glow);border-radius:12px;padding:28px;">
+          <h3 style="font-family:var(--font-display);font-size:1rem;color:var(--accent-cyan);letter-spacing:0.1em;margin-bottom:16px;">
+            <i class="bi bi-bullseye me-2"></i>MISSION OBJECTIVES
+          </h3>
+          <p style="color:var(--text-secondary);line-height:1.8;">{{ mission.objectives }}</p>
+        </div>
+
+        <!-- Crew -->
+        {% if astronauts %}
+        <div class="fade-in mt-5">
+          <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-cyan);letter-spacing:0.1em;margin-bottom:24px;">
+            <i class="bi bi-people me-2"></i>MISSION CREW
+          </h3>
+          <div class="row g-3">
+            {% for astronaut in astronauts %}
+            <div class="col-md-4 col-6">
+              <a href="{% url 'astronaut_detail' astronaut.pk %}" style="text-decoration:none;">
+                <div class="space-card text-center" style="padding:20px;">
+                  <div class="astronaut-avatar" style="width:70px;height:70px;font-size:1.8rem;margin:0 auto 12px;">👨‍🚀</div>
+                  <div style="font-family:var(--font-display);font-size:0.8rem;color:#fff;">{{ astronaut.name }}</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">{{ astronaut.specialization|default:astronaut.nationality }}</div>
+                </div>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Launches -->
+        {% if launches %}
+        <div class="fade-in mt-5">
+          <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-cyan);letter-spacing:0.1em;margin-bottom:24px;">
+            <i class="bi bi-rocket me-2"></i>LAUNCH EVENTS
+          </h3>
+          {% for launch in launches %}
+          <div class="launch-item">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <div style="font-family:var(--font-display);font-size:0.9rem;color:#fff;margin-bottom:6px;">{{ launch.rocket_name }}</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);">
+                  <i class="bi bi-geo-alt me-1"></i>{{ launch.launch_site }}&nbsp;&nbsp;
+                  <i class="bi bi-calendar3 me-1"></i>{{ launch.launch_datetime|date:"M d, Y H:i" }} UTC
+                </div>
+                {% if launch.notes %}<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px;">{{ launch.notes }}</div>{% endif %}
+              </div>
+              <span class="card-badge {% if launch.status == 'launched' %}badge-completed{% elif launch.status == 'scheduled' %}badge-planned{% elif launch.status == 'delayed' %}badge-cancelled{% else %}badge-cancelled{% endif %}">
+                {{ launch.get_status_display|upper }}
+              </span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Mission Specs -->
+        <div class="space-card fade-in" style="padding:28px;margin-bottom:24px;">
+          <h4 style="font-family:var(--font-display);font-size:0.85rem;letter-spacing:0.15em;color:var(--accent-cyan);margin-bottom:20px;">MISSION SPECIFICATIONS</h4>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Agency</span>
+              <span class="meta-value">{{ mission.agency }}</span>
+            </div>
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Type</span>
+              <span class="meta-value">{{ mission.get_mission_type_display }}</span>
+            </div>
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Status</span>
+              <span class="meta-value {% if mission.status == 'active' %}text-cyan{% endif %}">{{ mission.get_status_display }}</span>
+            </div>
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Launch Date</span>
+              <span class="meta-value">{{ mission.launch_date|date:"F d, Y" }}</span>
+            </div>
+            {% if mission.end_date %}
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">End Date</span>
+              <span class="meta-value">{{ mission.end_date|date:"F d, Y" }}</span>
+            </div>
+            {% endif %}
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Crew Size</span>
+              <span class="meta-value">{{ mission.crew_count }} Astronauts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="space-card fade-in fade-in-delay-1" style="padding:24px;">
+          <h4 style="font-family:var(--font-display);font-size:0.85rem;letter-spacing:0.15em;color:var(--accent-cyan);margin-bottom:16px;">QUICK LINKS</h4>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="{% url 'launches' %}" class="btn-space btn-outline-space" style="display:block;text-align:center;padding:10px 16px;font-size:0.68rem;">
+              <i class="bi bi-calendar3 me-2"></i>LAUNCH SCHEDULE
+            </a>
+            <a href="{% url 'astronauts' %}" class="btn-space btn-outline-space" style="display:block;text-align:center;padding:10px 16px;font-size:0.68rem;">
+              <i class="bi bi-people me-2"></i>FULL CREW ROSTER
+            </a>
+            <a href="{% url 'news' %}" class="btn-space btn-outline-space" style="display:block;text-align:center;padding:10px 16px;font-size:0.68rem;">
+              <i class="bi bi-newspaper me-2"></i>MISSION NEWS
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5 fade-in">
+      <a href="{% url 'missions' %}" class="btn-space btn-outline-space">
+        <i class="bi bi-arrow-left me-2"></i>BACK TO MISSIONS
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

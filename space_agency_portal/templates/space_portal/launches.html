@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Launch Schedule — COSMOSX{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <div class="hero-badge">🚀 MISSION CONTROL</div>
+    <h1 class="page-header-title">Launch Schedule</h1>
+    <p class="page-header-sub">Real-time countdown to our next historic launch</p>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+
+    <!-- Upcoming Launches -->
+    <div class="section-heading fade-in">
+      <span class="section-tag"><i class="bi bi-rocket-takeoff me-2"></i>Upcoming</span>
+      <h2 class="section-title">Scheduled Launches</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    {% if upcoming_launches %}
+    <div class="launch-timeline mb-5" style="max-width:860px;margin:0 auto;">
+      {% for launch in upcoming_launches %}
+      <div class="launch-item fade-in">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-6">
+            <div style="font-family:var(--font-display);font-size:0.65rem;letter-spacing:0.2em;color:var(--accent-gold);margin-bottom:8px;">
+              <i class="bi bi-rocket me-1"></i>SCHEDULED LAUNCH
+            </div>
+            <h4 style="font-family:var(--font-display);font-size:1.1rem;color:#fff;margin-bottom:6px;">{{ launch.rocket_name }}</h4>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:8px;">
+              <i class="bi bi-compass me-1"></i>{{ launch.mission.name }}
+            </p>
+            <div style="font-size:0.8rem;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:16px;">
+              <span><i class="bi bi-geo-alt me-1"></i>{{ launch.launch_site }}</span>
+              <span><i class="bi bi-calendar3 me-1"></i>{{ launch.launch_datetime|date:"M d, Y" }}</span>
+              <span><i class="bi bi-clock me-1"></i>{{ launch.launch_datetime|date:"H:i" }} UTC</span>
+            </div>
+            {% if launch.notes %}
+            <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:12px;font-style:italic;">{{ launch.notes }}</p>
+            {% endif %}
+          </div>
+          <div class="col-lg-6">
+            <div class="countdown-display" id="countdown-{{ launch.pk }}" data-countdown="{{ launch.launch_datetime|date:'c' }}">
+              <div class="countdown-unit">
+                <span class="countdown-value" data-unit="days">--</span>
+                <span class="countdown-label">DAYS</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-value" data-unit="hours">--</span>
+                <span class="countdown-label">HRS</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-value" data-unit="mins">--</span>
+                <span class="countdown-label">MIN</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-value" data-unit="secs">--</span>
+                <span class="countdown-label">SEC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center fade-in" style="padding:60px 0;color:var(--text-muted);">
+      <div style="font-size:4rem;margin-bottom:16px;">🛸</div>
+      <p>No upcoming launches scheduled. Stand by for mission briefings.</p>
+    </div>
+    {% endif %}
+
+    <!-- Past Launches -->
+    <div class="section-heading fade-in mt-5">
+      <span class="section-tag"><i class="bi bi-archive me-2"></i>Mission Archive</span>
+      <h2 class="section-title">Past Launches</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    {% if past_launches %}
+    <div class="row g-3">
+      {% for launch in past_launches %}
+      <div class="col-lg-6 fade-in">
+        <div class="space-card" style="padding:20px;">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+              <h6 style="font-family:var(--font-display);color:#fff;font-size:0.9rem;margin-bottom:4px;">{{ launch.rocket_name }}</h6>
+              <p style="font-size:0.8rem;color:var(--text-muted);">
+                {{ launch.mission.name }} &bull;
+                <i class="bi bi-geo-alt me-1"></i>{{ launch.launch_site }}
+              </p>
+              <p style="font-size:0.78rem;color:var(--text-muted);">
+                <i class="bi bi-calendar3 me-1"></i>{{ launch.launch_datetime|date:"M d, Y H:i" }} UTC
+              </p>
+            </div>
+            <span class="card-badge badge-completed">LAUNCHED</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center fade-in" style="padding:40px 0;color:var(--text-muted);">
+      <p>No past launch records found.</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

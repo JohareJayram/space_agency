@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ astronaut.name }} — COSMOSX{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb" style="margin-bottom:16px;">
+      <ol class="breadcrumb" style="background:none;padding:0;font-size:0.8rem;">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--text-muted);">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'astronauts' %}" style="color:var(--text-muted);">Astronauts</a></li>
+        <li class="breadcrumb-item active" style="color:var(--accent-cyan);">{{ astronaut.name }}</li>
+      </ol>
+    </nav>
+    <span class="card-badge {% if astronaut.status == 'active' %}badge-active{% elif astronaut.status == 'retired' %}badge-completed{% else %}badge-planned{% endif %}" style="font-size:0.7rem;padding:5px 14px;margin-bottom:12px;display:inline-block;">
+      {{ astronaut.get_status_display|upper }}
+    </span>
+    <h1 class="page-header-title">{{ astronaut.name }}</h1>
+    <p class="page-header-sub">{{ astronaut.rank|default:"Astronaut" }} &bull; {{ astronaut.nationality }}</p>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5">
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Profile Card -->
+        <div class="space-card fade-in text-center" style="padding:36px 24px;margin-bottom:24px;">
+          <div class="astronaut-avatar" style="width:120px;height:120px;font-size:3.5rem;margin:0 auto 20px;border-width:4px;">👨‍🚀</div>
+          <h3 style="font-family:var(--font-display);font-size:1.2rem;color:#fff;margin-bottom:6px;">{{ astronaut.name }}</h3>
+          <p style="color:var(--text-muted);font-size:0.88rem;">{{ astronaut.specialization|default:"Mission Specialist" }}</p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;">
+            <div style="background:rgba(0,229,255,0.06);border:1px solid var(--border-glow);border-radius:8px;padding:14px;">
+              <span style="font-family:var(--font-display);font-size:1.4rem;color:var(--accent-cyan);display:block;">{{ astronaut.missions_count }}</span>
+              <span style="font-size:0.65rem;color:var(--text-muted);letter-spacing:0.1em;">MISSIONS</span>
+            </div>
+            <div style="background:rgba(0,229,255,0.06);border:1px solid var(--border-glow);border-radius:8px;padding:14px;">
+              <span style="font-family:var(--font-display);font-size:1.4rem;color:var(--accent-cyan);display:block;">{{ astronaut.hours_in_space|floatformat:0 }}</span>
+              <span style="font-size:0.65rem;color:var(--text-muted);letter-spacing:0.1em;">HOURS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specs -->
+        <div class="space-card fade-in fade-in-delay-1" style="padding:24px;">
+          <h4 style="font-family:var(--font-display);font-size:0.8rem;letter-spacing:0.15em;color:var(--accent-cyan);margin-bottom:16px;">PROFILE DATA</h4>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Nationality</span>
+              <span class="meta-value">{{ astronaut.nationality }}</span>
+            </div>
+            {% if astronaut.rank %}
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Rank</span>
+              <span class="meta-value">{{ astronaut.rank }}</span>
+            </div>
+            {% endif %}
+            {% if astronaut.specialization %}
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Specialization</span>
+              <span class="meta-value">{{ astronaut.specialization }}</span>
+            </div>
+            {% endif %}
+            {% if astronaut.birth_date %}
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Date of Birth</span>
+              <span class="meta-value">{{ astronaut.birth_date|date:"M d, Y" }}</span>
+            </div>
+            {% endif %}
+            <div class="meta-item" style="border-radius:6px;">
+              <span class="meta-label">Status</span>
+              <span class="meta-value {% if astronaut.status == 'active' %}text-cyan{% endif %}">{{ astronaut.get_status_display }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main -->
+      <div class="col-lg-8">
+        <!-- Bio -->
+        <div class="fade-in">
+          <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-cyan);letter-spacing:0.1em;margin-bottom:16px;">
+            <i class="bi bi-person-lines-fill me-2"></i>BIOGRAPHY
+          </h3>
+          <p style="color:var(--text-secondary);line-height:1.9;font-size:1rem;">{{ astronaut.bio }}</p>
+        </div>
+
+        <!-- Assigned Missions -->
+        {% with missions=astronaut.missions.all %}
+        {% if missions %}
+        <div class="fade-in mt-5">
+          <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-cyan);letter-spacing:0.1em;margin-bottom:24px;">
+            <i class="bi bi-rocket me-2"></i>ASSIGNED MISSIONS
+          </h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            {% for mission in missions %}
+            <a href="{% url 'mission_detail' mission.slug %}" style="text-decoration:none;">
+              <div class="launch-item" style="margin-bottom:0;">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                  <div>
+                    <div style="font-family:var(--font-display);font-size:0.88rem;color:#fff;margin-bottom:4px;">{{ mission.name }}</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);">
+                      <i class="bi bi-calendar3 me-1"></i>{{ mission.launch_date|date:"M Y" }} &bull; {{ mission.get_mission_type_display }}
+                    </div>
+                  </div>
+                  <span class="card-badge {% if mission.status == 'active' %}badge-active{% elif mission.status == 'planned' %}badge-planned{% elif mission.status == 'completed' %}badge-completed{% else %}badge-cancelled{% endif %}">
+                    {{ mission.get_status_display }}
+                  </span>
+                </div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="mt-5 fade-in">
+          <a href="{% url 'astronauts' %}" class="btn-space btn-outline-space">
+            <i class="bi bi-arrow-left me-2"></i>BACK TO CREW ROSTER
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

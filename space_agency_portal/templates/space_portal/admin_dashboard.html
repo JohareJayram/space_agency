@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard — COSMOSX{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-gradient">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-12 text-center section-heading">
+        <span class="section-tag">ADMIN CONTROL</span>
+        <h2 class="section-title">Mission Command Dashboard</h2>
+        <div class="section-divider"></div>
+        <p class="section-subtitle">Quickly review key agency metrics, mission status, crew rosters, and incoming communications from one premium command center.</p>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-5 dashboard-summary">
+      <div class="col-md-4">
+        <div class="dashboard-card p-4">
+          <div class="dashboard-card-header">Total Missions</div>
+          <div class="dashboard-card-value">{{ total_missions }}</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="dashboard-card p-4">
+          <div class="dashboard-card-header">Active Astronauts</div>
+          <div class="dashboard-card-value">{{ active_astronauts }}</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="dashboard-card p-4">
+          <div class="dashboard-card-header">Completed Missions</div>
+          <div class="dashboard-card-value">{{ completed_missions }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-4 mb-4 dashboard-panel">
+      <div class="col-lg-6">
+        <div class="space-card p-4">
+          <div class="panel-heading">
+            <h4>Recent Missions</h4>
+            <span class="panel-badge">Latest 8</span>
+          </div>
+          <ul class="dashboard-list list-group list-group-flush mt-3">
+            {% for mission in missions|slice:":8" %}
+            <li class="list-group-item"><strong>{{ mission.name }}</strong> <span>{{ mission.get_status_display }}</span></li>
+            {% empty %}
+            <li class="list-group-item">No missions available.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="space-card p-4">
+          <div class="panel-heading">
+            <h4>Registered Astronauts</h4>
+            <span class="panel-badge">Crew Roster</span>
+          </div>
+          <ul class="dashboard-list list-group list-group-flush mt-3">
+            {% for astronaut in astronauts|slice:":8" %}
+            <li class="list-group-item"><strong>{{ astronaut.name }}</strong> <span>{{ astronaut.status }}</span></li>
+            {% empty %}
+            <li class="list-group-item">No astronauts registered.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4 dashboard-panel">
+      <div class="col-lg-6">
+        <div class="space-card p-4">
+          <div class="panel-heading">
+            <h4>Launch Records</h4>
+            <span class="panel-badge">Top 8</span>
+          </div>
+          <ul class="dashboard-list list-group list-group-flush mt-3">
+            {% for launch in launches|slice:":8" %}
+            <li class="list-group-item"><strong>{{ launch.rocket_name }}</strong> <span>{{ launch.get_status_display }}</span></li>
+            {% empty %}
+            <li class="list-group-item">No launches scheduled.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="space-card p-4">
+          <div class="panel-heading">
+            <h4>News Articles</h4>
+            <span class="panel-badge">Latest Posts</span>
+          </div>
+          <ul class="dashboard-list list-group list-group-flush mt-3">
+            {% for article in articles|slice:":8" %}
+            <li class="list-group-item"><strong>{{ article.title }}</strong> <span>{{ article.category }}</span></li>
+            {% empty %}
+            <li class="list-group-item">No news articles published.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4 dashboard-panel">
+      <div class="col-lg-6">
+        <div class="space-card p-4">
+          <div class="panel-heading">
+            <h4>Spacecraft Gallery</h4>
+            <span class="panel-badge">Featured Fleet</span>
+          </div>
+          <ul class="dashboard-list list-group list-group-flush mt-3">
+            {% for craft in spacecraft|slice:":8" %}
+            <li class="list-group-item"><strong>{{ craft.name }}</strong> <span>{{ craft.spacecraft_type }}</span></li>
+            {% empty %}
+            <li class="list-group-item">No spacecraft entries.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="space-card p-4">
+          <div class="panel-heading">
+            <h4>Contact Messages</h4>
+            <span class="panel-badge">Incoming</span>
+          </div>
+          <ul class="dashboard-list list-group list-group-flush mt-3">
+            {% for message in contacts|slice:":8" %}
+            <li class="list-group-item"><strong>{{ message.name }}</strong> <span>{{ message.subject }}</span></li>
+            {% empty %}
+            <li class="list-group-item">No contact messages.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="space-card p-4">
+          <h4>Registered Users</h4>
+          <div class="table-responsive mt-3">
+            <table class="table table-dark table-striped">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Role</th>
+                  <th>Staff Status</th>
+                  <th>Date Joined</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                <tr>
+                  <td>{{ user.username }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.first_name }}</td>
+                  <td>{{ user.last_name }}</td>
+                  <td>{{ user.userprofile.role|title }}</td>
+                  <td>{% if user.is_staff %}Yes{% else %}No{% endif %}</td>
+                  <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7">No users registered.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Astronauts — COSMOSX{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container">
+    <div class="hero-badge">👨‍🚀 CREW ROSTER</div>
+    <h1 class="page-header-title">Our Astronauts</h1>
+    <p class="page-header-sub">The brave explorers pushing humanity beyond Earth's boundaries</p>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+
+    <!-- Filters -->
+    <form method="GET" class="fade-in">
+      <div class="search-bar">
+        <input type="text" name="q" class="form-control" placeholder="🔍 Search astronauts..." value="{{ search_query }}" style="flex:1;min-width:200px;">
+        <select name="status" class="form-select" style="width:auto;">
+          <option value="">All Status</option>
+          <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+          <option value="retired" {% if status_filter == 'retired' %}selected{% endif %}>Retired</option>
+          <option value="training" {% if status_filter == 'training' %}selected{% endif %}>In Training</option>
+        </select>
+        <button type="submit" class="btn-space btn-primary-space">SEARCH</button>
+        {% if search_query or status_filter %}
+        <a href="{% url 'astronauts' %}" class="btn-space btn-outline-space">CLEAR</a>
+        {% endif %}
+      </div>
+    </form>
+
+    <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:30px;">
+      {{ astronauts|length }} CREW MEMBER{% if astronauts|length != 1 %}S{% endif %} FOUND
+    </div>
+
+    {% if astronauts %}
+    <div class="row g-4">
+      {% for astronaut in astronauts %}
+      <div class="col-lg-3 col-md-4 col-sm-6 fade-in" style="transition-delay:{{ forloop.counter0 }}0ms;">
+        <a href="{% url 'astronaut_detail' astronaut.pk %}" style="text-decoration:none;">
+          <div class="space-card astronaut-card h-100">
+            <div class="card-body-space">
+              <div class="astronaut-avatar">👨‍🚀</div>
+              <div class="card-badge
+                {% if astronaut.status == 'active' %}badge-active
+                {% elif astronaut.status == 'retired' %}badge-completed
+                {% else %}badge-planned{% endif %}" style="margin-bottom:10px;">
+                {{ astronaut.get_status_display|upper }}
+              </div>
+              <h5 class="card-title-space">{{ astronaut.name }}</h5>
+              <p style="font-size:0.8rem;color:var(--text-muted);">
+                <i class="bi bi-flag me-1"></i>{{ astronaut.nationality }}
+              </p>
+              {% if astronaut.specialization %}
+              <p style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">{{ astronaut.specialization }}</p>
+              {% endif %}
+              <div class="astronaut-stats">
+                <div class="astro-stat">
+                  <span class="astro-stat-value">{{ astronaut.missions_count }}</span>
+                  <span class="astro-stat-label">Missions</span>
+                </div>
+                <div class="astro-stat">
+                  <span class="astro-stat-value">{{ astronaut.hours_in_space|floatformat:0 }}</span>
+                  <span class="astro-stat-label">Hours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center fade-in" style="padding:80px 0;color:var(--text-muted);">
+      <div style="font-size:4rem;margin-bottom:20px;">👨‍🚀</div>
+      <h4 style="font-family:var(--font-display);color:var(--text-secondary);">No astronauts found</h4>
+      <p>Try adjusting your search filters.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

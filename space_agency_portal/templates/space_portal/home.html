@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}COSMOSX — Space Agency Information Portal{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ── -->
+<section class="hero-section">
+  <div class="hero-orbit hero-orbit-1"></div>
+  <div class="hero-orbit hero-orbit-2"></div>
+  <div class="hero-orbit hero-orbit-3"></div>
+  <div class="planet-deco planet-1"></div>
+
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7 hero-content">
+        <div class="hero-badge fade-in">🛰️ &nbsp; LIVE MISSION MONITORING ACTIVE</div>
+        <h1 class="hero-title fade-in fade-in-delay-1">
+          Exploring the
+          <span class="highlight">Final Frontier</span>
+        </h1>
+        <p class="hero-subtitle fade-in fade-in-delay-2">
+          COSMOSX Space Agency — Pushing humanity's boundaries through bold missions, cutting-edge research, and the courage to venture where no one has gone before.
+        </p>
+        <div class="d-flex flex-wrap gap-3 fade-in fade-in-delay-3">
+          <a href="{% url 'missions' %}" class="btn-space btn-primary-space">
+            <i class="bi bi-rocket-takeoff me-2"></i>VIEW MISSIONS
+          </a>
+          <a href="{% url 'launches' %}" class="btn-space btn-outline-space">
+            <i class="bi bi-broadcast me-2"></i>UPCOMING LAUNCHES
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-5 fade-in fade-in-delay-2">
+        <div class="stats-bar">
+          <div class="row g-0">
+            <div class="col-6 stat-item" style="border-right:1px solid var(--border-glow);border-bottom:1px solid var(--border-glow);padding-bottom:20px;">
+              <span class="stat-number counter" data-target="{{ total_missions }}">0</span>
+              <span class="stat-label"><i class="bi bi-rocket me-1"></i>Total Missions</span>
+            </div>
+            <div class="col-6 stat-item" style="border-bottom:1px solid var(--border-glow);padding-bottom:20px;">
+              <span class="stat-number counter" data-target="{{ active_astronauts }}">0</span>
+              <span class="stat-label"><i class="bi bi-person-badge me-1"></i>Active Crew</span>
+            </div>
+            <div class="col-6 stat-item" style="border-right:1px solid var(--border-glow);padding-top:20px;">
+              <span class="stat-number counter" data-target="{{ completed_missions }}">0</span>
+              <span class="stat-label"><i class="bi bi-check-circle me-1"></i>Completed</span>
+            </div>
+            <div class="col-6 stat-item" style="padding-top:20px;">
+              <span class="stat-number" style="color:var(--accent-gold);">24</span>
+              <span class="stat-label"><i class="bi bi-globe me-1"></i>Years in Space</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mission Stats Chart -->
+        <div class="mt-3" style="background:var(--card-bg);border:1px solid var(--border-glow);border-radius:12px;padding:20px;">
+          <div style="font-family:var(--font-display);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent-cyan);margin-bottom:12px;">MISSION DISTRIBUTION</div>
+          <canvas id="missionStatsChart" height="150"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Active Missions ── -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-heading fade-in">
+      <span class="section-tag"><i class="bi bi-rocket me-2"></i>Current Operations</span>
+      <h2 class="section-title">Active Missions</h2>
+      <div class="section-divider"></div>
+      <p style="color:var(--text-secondary);max-width:500px;margin:0 auto;font-size:0.95rem;">Real-time status of our ongoing space exploration missions</p>
+    </div>
+
+    {% if featured_missions %}
+    <div class="row g-4">
+      {% for mission in featured_missions %}
+      <div class="col-lg-4 col-md-6 fade-in" style="transition-delay:{{ forloop.counter0 }}00ms;">
+        <a href="{% url 'mission_detail' mission.slug %}" style="text-decoration:none;">
+          <div class="space-card h-100">
+            <div class="card-image">
+              {% if mission.mission_type == 'lunar' %}🌕
+              {% elif mission.mission_type == 'mars' %}🔴
+              {% elif mission.mission_type == 'deep_space' %}🌌
+              {% elif mission.mission_type == 'iss' %}🛸
+              {% elif mission.mission_type == 'satellite' %}🛰️
+              {% else %}🌍{% endif %}
+            </div>
+            <div class="card-body-space">
+              <div class="card-badge badge-active">● ACTIVE</div>
+              <div class="card-badge ms-2" style="background:rgba(26,127,255,0.15);color:var(--accent-electric);border:1px solid rgba(26,127,255,0.3);">
+                {{ mission.get_mission_type_display }}
+              </div>
+              <h5 class="card-title-space mt-2">{{ mission.name }}</h5>
+              <p class="card-text-space">{{ mission.description|truncatewords:20 }}</p>
+              <div class="d-flex justify-content-between align-items-center mt-3" style="font-size:0.78rem;color:var(--text-muted);">
+                <span><i class="bi bi-calendar3 me-1"></i>{{ mission.launch_date|date:"M Y" }}</span>
+                <span><i class="bi bi-people me-1"></i>{{ mission.crew_count }} Crew</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center" style="color:var(--text-muted);padding:60px 0;">
+      <div style="font-size:4rem;margin-bottom:20px;">🚀</div>
+      <p>No active missions yet. <a href="/admin/">Add missions via admin panel.</a></p>
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-5 fade-in">
+      <a href="{% url 'missions' %}" class="btn-space btn-outline-space">
+        VIEW ALL MISSIONS <i class="bi bi-arrow-right ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Upcoming Launches ── -->
+<section class="section-pad" style="background:linear-gradient(180deg, transparent, rgba(13,34,69,0.2), transparent);">
+  <div class="container">
+    <div class="section-heading fade-in">
+      <span class="section-tag"><i class="bi bi-broadcast me-2"></i>Mission Control</span>
+      <h2 class="section-title">Upcoming Launches</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    {% if upcoming_launches %}
+    <div class="row g-4">
+      {% for launch in upcoming_launches %}
+      <div class="col-lg-4 col-md-6 fade-in">
+        <div class="space-card h-100">
+          <div class="card-body-space">
+            <div style="font-family:var(--font-display);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent-gold);margin-bottom:14px;">
+              <i class="bi bi-clock me-1"></i> SCHEDULED LAUNCH
+            </div>
+            <h5 class="card-title-space">{{ launch.rocket_name }}</h5>
+            <p class="card-text-space mb-2">{{ launch.mission.name }}</p>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:16px;">
+              <i class="bi bi-geo-alt me-1"></i>{{ launch.launch_site }}
+            </div>
+            <!-- Countdown -->
+            <div class="countdown-display" id="countdown-{{ launch.pk }}" data-countdown="{{ launch.launch_datetime|date:'c' }}">
+              <div class="countdown-unit">
+                <span class="countdown-value" data-unit="days">--</span>
+                <span class="countdown-label">DAYS</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-value" data-unit="hours">--</span>
+                <span class="countdown-label">HRS</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-value" data-unit="mins">--</span>
+                <span class="countdown-label">MIN</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-value" data-unit="secs">--</span>
+                <span class="countdown-label">SEC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center" style="color:var(--text-muted);padding:40px 0;">
+      <p>No upcoming launches scheduled. Check back soon!</p>
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4 fade-in">
+      <a href="{% url 'launches' %}" class="btn-space btn-outline-space">FULL LAUNCH SCHEDULE</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Latest News ── -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-heading fade-in">
+      <span class="section-tag"><i class="bi bi-newspaper me-2"></i>Mission Briefings</span>
+      <h2 class="section-title">Latest News</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    {% if latest_news %}
+    <div class="row g-4">
+      {% for article in latest_news %}
+      <div class="col-lg-4 col-md-6 fade-in">
+        <a href="{% url 'news_detail' article.slug %}" style="text-decoration:none;">
+          <div class="space-card h-100">
+            <div class="card-image" style="height:140px;font-size:2.5rem;">
+              {% if article.category == 'mission' %}🚀
+              {% elif article.category == 'research' %}🔬
+              {% elif article.category == 'technology' %}⚙️
+              {% elif article.category == 'astronaut' %}👨‍🚀
+              {% else %}🌌{% endif %}
+            </div>
+            <div class="card-body-space">
+              <div class="card-badge" style="background:rgba(0,229,255,0.1);color:var(--accent-cyan);border:1px solid rgba(0,229,255,0.2);">
+                {{ article.get_category_display }}
+              </div>
+              <h5 class="card-title-space mt-2">{{ article.title }}</h5>
+              <p class="card-text-space">{{ article.summary|truncatewords:18 }}</p>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-top:12px;">
+                <i class="bi bi-calendar3 me-1"></i>{{ article.published_at|date:"M d, Y" }}
+                {% if article.author %}
+                <span class="ms-3"><i class="bi bi-person me-1"></i>{{ article.author.get_full_name|default:article.author.username }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center" style="color:var(--text-muted);padding:40px 0;">
+      <p>No featured news articles yet.</p>
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4 fade-in">
+      <a href="{% url 'news' %}" class="btn-space btn-outline-space">ALL NEWS & UPDATES</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section style="padding:80px 0;background:linear-gradient(135deg,rgba(13,34,69,0.4),rgba(4,8,18,0.8));">
+  <div class="container text-center fade-in">
+    <div style="font-size:3rem;margin-bottom:20px;">🌌</div>
+    <h2 class="section-title">Ready to Explore the Universe?</h2>
+    <p style="color:var(--text-secondary);max-width:500px;margin:0 auto 36px;font-size:1rem;">
+      Join the COSMOSX family. Stay updated on missions, launches, and the latest breakthroughs in space exploration.
+    </p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      {% if not user.is_authenticated %}
+      <a href="{% url 'register' %}" class="btn-space btn-primary-space">CREATE ACCOUNT</a>
+      {% endif %}
+      <a href="{% url 'contact' %}" class="btn-space btn-outline-space">CONTACT US</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
